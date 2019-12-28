@@ -5,7 +5,7 @@
 
 char* ssid = "wifiname";
 char* password = "wifipass";
-const char* host = "hostname.xxx";
+const char* host = "http://host.sa";
 
 int count1 = 0;
 int count2 = 0;
@@ -62,7 +62,7 @@ String ipToString(IPAddress ip){
 
 void loop() {
   
-
+/*
   digitalWrite(LED_BUILTIN, LOW);
   delay(100);
   digitalWrite(LED_BUILTIN, HIGH);
@@ -70,22 +70,26 @@ void loop() {
   digitalWrite(LED_BUILTIN, LOW);
   delay(1000);
   digitalWrite(LED_BUILTIN, HIGH);
+*/
 
-
-  String url = "/api/receive/arduino_timer_switch?c=" + 
-                "&c=" + (String)count2 +
+    String url = "/api/receive/arduino_timer_switch?"
+                "c=" + (String)count2 +
                 "&ip=" + (String)  ipToString(WiFi.localIP()) +
                 "&ssid=" +  (String) ssid +
                 "&rssi=" +  (String) WiFi.RSSI() +
-                "&mac=" +  (String) WiFi.macAddress()+
-               
+                "&mac=" +  (String) WiFi.macAddress();
+    
+                 
 
 // Check WiFi Status
   if (WiFi.status() == WL_CONNECTED) {
     HTTPClient http;
     http.begin(host + url);
+    Serial.println(host + url);
     int httpCode = http.GET();
+    Serial.println(httpCode);
     if (httpCode > 0) {
+      
       String payload = http.getString();
       // TODO: Parsing
       Serial.println(payload);
@@ -107,20 +111,21 @@ if (!root.success()) {
 
 
   if( api_switch1 == 1){
-      digitalWrite(relay1, HIGH);
+      digitalWrite(relay, HIGH);
       Serial.println("relay1 ON");
     }else{
-      digitalWrite(relay1, LOW);
+      digitalWrite(relay, LOW);
       Serial.println("relay1 OFF");
     }
 
-    } // end (httpCode > 0)
     
+    } // end (httpCode > 0)
     http.end();
     count2++;
+    
     
     } // end (WiFi.status() == WL_CONNECTED)
     
 
- delay(500);
+ delay(1500);
 }
